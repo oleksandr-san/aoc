@@ -1,3 +1,4 @@
+use std::result::Result::Ok;
 use anyhow::*;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -9,7 +10,12 @@ const DAY: &str = "1"; // TODO: Fill the day
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
 
 const TEST: &str = "\
-<TEST-INPUT>
+3   4
+4   3
+2   5
+1   3
+3   9
+3   3
 "; // TODO: Add the test input
 
 fn main() -> Result<()> {
@@ -19,13 +25,29 @@ fn main() -> Result<()> {
     println!("=== Part 1 ===");
 
     fn part1<R: BufRead>(reader: R) -> Result<usize> {
-        // TODO: Solve Part 1 of the puzzle
-        let answer = reader.lines().flatten().count();
+        let (mut a_, mut b_): (Vec<_>, Vec<_>) = reader
+            .lines()
+            .flatten()
+            .filter_map(|line| {
+                line.split_once("   ")
+                    .and_then(|(a, b)| match (a.parse::<usize>(), b.parse::<usize>()) {
+                        (Ok(a), Ok(b)) => Some((a, b)),
+                        _ => None,
+                    })
+            })
+            .unzip();
+
+        a_.sort();
+        b_.sort();
+
+        let answer = a_.into_iter().zip(b_.into_iter()).map(|(a, b)| {
+            a.abs_diff(b)
+        }).sum();
         Ok(answer)
     }
 
     // TODO: Set the expected answer for the test input
-    assert_eq!(0, part1(BufReader::new(TEST.as_bytes()))?);
+    assert_eq!(11, part1(BufReader::new(TEST.as_bytes()))?);
 
     let input_file = BufReader::new(File::open(INPUT_FILE)?);
     let result = time_snippet!(part1(input_file)?);
@@ -35,15 +57,36 @@ fn main() -> Result<()> {
     //region Part 2
     // println!("\n=== Part 2 ===");
     //
-    // fn part2<R: BufRead>(reader: R) -> Result<usize> {
-    //     Ok(0)
-    // }
-    //
-    // assert_eq!(0, part2(BufReader::new(TEST.as_bytes()))?);
-    //
-    // let input_file = BufReader::new(File::open(INPUT_FILE)?);
-    // let result = time_snippet!(part2(input_file)?);
-    // println!("Result = {}", result);
+    fn part2<R: BufRead>(reader: R) -> Result<usize> {
+        let (a_, b_): (Vec<_>, Vec<_>) = reader
+            .lines()
+            .flatten()
+            .filter_map(|line| {
+                line.split_once("   ")
+                    .and_then(|(a, b)| match (a.parse::<usize>(), b.parse::<usize>()) {
+                        (Ok(a), Ok(b)) => Some((a, b)),
+                        _ => None,
+                    })
+            })
+            .unzip();
+
+        let bm_ = b_.into_iter()
+            .fold(std::collections::HashMap::<usize, usize>::new(), |mut m, x| {
+                *m.entry(x).or_default() += 1;
+                m
+            });
+
+        let answer = a_.iter().map(|a| {
+            a * bm_.get(a).unwrap_or(&0)
+        }).sum();
+        Ok(answer)
+    }
+
+    assert_eq!(31, part2(BufReader::new(TEST.as_bytes()))?);
+
+    let input_file = BufReader::new(File::open(INPUT_FILE)?);
+    let result = time_snippet!(part2(input_file)?);
+    println!("Result = {}", result);
     //endregion
 
     Ok(())
