@@ -7,7 +7,7 @@ use const_format::concatcp;
 use itertools::Itertools;
 use adv_code_2024::*;
 
-const DAY: &str = "2"; // TODO: Fill the day
+const DAY: &str = "2";
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
 
 const TEST: &str = "\
