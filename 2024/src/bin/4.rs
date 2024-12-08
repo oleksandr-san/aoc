@@ -6,7 +6,6 @@ use itertools::Itertools;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::result::Result::Ok;
-use std::slice::Iter;
 
 const DAY: &str = "4";
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
@@ -21,97 +20,6 @@ SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX"#;
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-enum Operation {
-    Mul,
-    Add,
-    Concat,
-}
-
-type Position = (usize, usize);
-type Rectangle = (Position, Position);
-
-#[derive(Clone, Copy, Debug)]
-enum Direction {
-    N,
-    S,
-    W,
-    E,
-    NE,
-    NW,
-    SE,
-    SW,
-}
-
-impl Direction {
-    pub fn iter() -> Iter<'static, Direction> {
-        use Direction::*;
-        static DIRECTIONS: [Direction; 8] = [N, S, W, E, NE, NW, SE, SW];
-        DIRECTIONS.iter()
-    }
-}
-
-fn beam(pos: Position, dir: Direction, len: usize, border: Position) -> Option<Vec<Position>> {
-    match dir {
-        Direction::N => {
-            if pos.0 >= len - 1 {
-                Some((0..len).map(|d| (pos.0 - d, pos.1)).collect_vec())
-            } else {
-                None
-            }
-        }
-        Direction::S => {
-            if pos.0 + len - 1 <= border.0 {
-                Some((0..len).map(|d| (pos.0 + d, pos.1)).collect_vec())
-            } else {
-                None
-            }
-        }
-        Direction::W => {
-            if pos.1 >= len - 1 {
-                Some((0..len).map(|d| (pos.0, pos.1 - d)).collect_vec())
-            } else {
-                None
-            }
-        }
-        Direction::E => {
-            if pos.1 + len - 1 <= border.1 {
-                Some((0..len).map(|d| (pos.0, pos.1 + d)).collect_vec())
-            } else {
-                None
-            }
-        }
-        Direction::NW => {
-            if pos.0 >= len - 1 && pos.1 >= len - 1 {
-                Some((0..len).map(|d| (pos.0 - d, pos.1 - d)).collect_vec())
-            } else {
-                None
-            }
-        }
-        Direction::NE => {
-            if pos.0 >= len - 1 && pos.1 + len - 1 <= border.1 {
-                Some((0..len).map(|d| (pos.0 - d, pos.1 + d)).collect_vec())
-            } else {
-                None
-            }
-        }
-        Direction::SW => {
-            if pos.0 + len - 1 <= border.0 && pos.1 >= len - 1 {
-                Some((0..len).map(|d| (pos.0 + d, pos.1 - d)).collect_vec())
-            } else {
-                None
-            }
-        }
-        Direction::SE => {
-            if pos.0 + len - 1 <= border.0 && pos.1 + len - 1 <= border.1 {
-                Some((0..len).map(|d| (pos.0 + d, pos.1 + d)).collect_vec())
-            } else {
-                None
-            }
-        }
-    }
-}
 
 fn main() -> Result<()> {
     start_day(DAY);
@@ -191,7 +99,7 @@ fn main() -> Result<()> {
                     .cloned()
                     .enumerate()
                     .filter(|(_, c)| *c == target_char)
-                    .flat_map(|(j, c)| {
+                    .flat_map(|(j, _)| {
                         let pos = (i, j);
 
                         let ne = beam(pos, Direction::NE, 2, area.1)?[1];
