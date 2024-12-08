@@ -25,50 +25,6 @@ fn main() -> Result<()> {
     //region Part 1
     println!("=== Part 1 ===");
 
-    fn check_report(report: &[i32], mut tolerations: usize) -> bool {
-        let (mut asc, mut start_idx) = if report[0] < report[1] {
-            (true, 1)
-        } else if report[0] > report[1] {
-            (false, 1)
-        } else {
-            (report[1] < report[2], 2)
-        };
-        let mut prev = report[start_idx - 1];
-
-        for v in &report[start_idx..] {
-            if v.abs_diff(prev) < 1 || v.abs_diff(prev) > 3 {
-                if tolerations != 0 {
-                    tolerations -= 1;
-                    continue;
-                } else {
-                    println!(
-                        "difference condition is not met for {:?}: {} -> {}",
-                        report, prev, v
-                    );
-                    return false;
-                }
-            }
-
-            if (v > &prev) != asc {
-                if tolerations != 0 {
-                    tolerations -= 1;
-                    // asc = !asc;
-                    continue;
-                } else {
-                    println!(
-                        "order condition is not met for {:?}: {} -> {}",
-                        report, prev, v
-                    );
-                    return false;
-                }
-            }
-
-            prev = *v;
-        }
-
-        true
-    }
-
     fn check_report_orig(record: &[i32]) -> bool {
         let is_desc = record[0] > record[1];
 
@@ -80,17 +36,17 @@ fn main() -> Result<()> {
             }
 
             let diff = (a - b).abs();
-            if diff < 1 || diff > 3 {
+            if !(1..=3).contains(&diff) {
                 return false;
             }
         }
-        return true;
+        true
     }
 
     fn part1<R: BufRead>(reader: R) -> Result<usize> {
         let answer = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .map(|line| {
                 let report = line.split(" ").flat_map(|s| s.parse::<i32>()).collect_vec();
                 check_report_orig(&report) as usize
@@ -112,7 +68,7 @@ fn main() -> Result<()> {
     fn part2<R: BufRead>(reader: R) -> Result<usize> {
         let answer = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .map(|line| {
                 let report = line.split(" ").flat_map(|s| s.parse::<i32>()).collect_vec();
 

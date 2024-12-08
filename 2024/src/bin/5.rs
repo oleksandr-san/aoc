@@ -3,7 +3,6 @@ use anyhow::*;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
 use itertools::Itertools;
-use regex::Regex;
 use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -54,17 +53,15 @@ fn main() -> Result<()> {
 
         let answer = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .filter_map(|line| {
                 println!("{}", line);
                 if !rules_read {
                     if line.is_empty() {
                         rules_read = true;
-                    } else {
-                        if let Some((a, b)) = line.split_once("|") {
-                            if let (Ok(a), Ok(b)) = (a.parse::<usize>(), b.parse::<usize>()) {
-                                rules.entry(a).or_default().insert(b);
-                            }
+                    } else if let Some((a, b)) = line.split_once("|") {
+                        if let (Ok(a), Ok(b)) = (a.parse::<usize>(), b.parse::<usize>()) {
+                            rules.entry(a).or_default().insert(b);
                         }
                     }
                     None
@@ -114,17 +111,15 @@ fn main() -> Result<()> {
 
         let answer = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .filter_map(|line| {
                 println!("{}", line);
                 if !rules_read {
                     if line.is_empty() {
                         rules_read = true;
-                    } else {
-                        if let Some((a, b)) = line.split_once("|") {
-                            if let (Ok(a), Ok(b)) = (a.parse::<usize>(), b.parse::<usize>()) {
-                                rules.entry(a).or_default().insert(b);
-                            }
+                    } else if let Some((a, b)) = line.split_once("|") {
+                        if let (Ok(a), Ok(b)) = (a.parse::<usize>(), b.parse::<usize>()) {
+                            rules.entry(a).or_default().insert(b);
                         }
                     }
                     None

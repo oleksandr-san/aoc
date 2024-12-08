@@ -2,7 +2,6 @@ use adv_code_2024::*;
 use anyhow::*;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
-use itertools::Itertools;
 use regex::Regex;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -24,7 +23,7 @@ fn main() -> Result<()> {
         let re = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)").expect("regex compilation");
         let answer = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .map(|line| {
                 re.captures_iter(&line)
                     .filter_map(|caps| {
@@ -57,7 +56,7 @@ fn main() -> Result<()> {
         let mut enabled = true;
         let answer = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .map(|line| {
                 re.captures_iter(&line)
                     .filter_map(|caps| {

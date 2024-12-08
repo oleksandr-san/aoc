@@ -3,7 +3,6 @@ use anyhow::*;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
 use itertools::Itertools;
-use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::result::Result::Ok;
@@ -62,7 +61,7 @@ fn product_recursive<T: Clone>(
     result: &mut Vec<Vec<T>>,
 ) {
     if current.len() == n {
-        result.push(current.iter().cloned().collect());
+        result.push(current.to_vec());
         return;
     }
 
@@ -89,7 +88,7 @@ fn main() -> Result<()> {
     fn part1<R: BufRead>(reader: R) -> Result<usize> {
         let answer = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .filter_map(|line| {
                 let (result, args) = line.split_once(": ")?;
                 let result = result.parse::<usize>().ok()?;
@@ -124,7 +123,7 @@ fn main() -> Result<()> {
     fn part2<R: BufRead>(reader: R) -> Result<usize> {
         let answer = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .filter_map(|line| {
                 let (result, args) = line.split_once(": ")?;
                 let result = result.parse::<usize>().ok()?;

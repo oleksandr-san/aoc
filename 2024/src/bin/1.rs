@@ -27,7 +27,7 @@ fn main() -> Result<()> {
     fn part1<R: BufRead>(reader: R) -> Result<usize> {
         let (mut a_, mut b_): (Vec<_>, Vec<_>) = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .filter_map(|line| {
                 line.split_once("   ").and_then(|(a, b)| {
                     match (a.parse::<usize>(), b.parse::<usize>()) {
@@ -43,7 +43,7 @@ fn main() -> Result<()> {
 
         let answer = a_
             .into_iter()
-            .zip(b_.into_iter())
+            .zip(b_)
             .map(|(a, b)| a.abs_diff(b))
             .sum();
         Ok(answer)
@@ -63,7 +63,7 @@ fn main() -> Result<()> {
     fn part2<R: BufRead>(reader: R) -> Result<usize> {
         let (a_, b_): (Vec<_>, Vec<_>) = reader
             .lines()
-            .flatten()
+            .map_while(Result::ok)
             .filter_map(|line| {
                 line.split_once("   ").and_then(|(a, b)| {
                     match (a.parse::<usize>(), b.parse::<usize>()) {
