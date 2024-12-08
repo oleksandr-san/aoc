@@ -1,10 +1,10 @@
-use std::result::Result::Ok;
+use adv_code_2024::*;
 use anyhow::*;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
-use adv_code_2024::*;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+use std::result::Result::Ok;
 
 const DAY: &str = "1"; // TODO: Fill the day
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
@@ -29,20 +29,23 @@ fn main() -> Result<()> {
             .lines()
             .flatten()
             .filter_map(|line| {
-                line.split_once("   ")
-                    .and_then(|(a, b)| match (a.parse::<usize>(), b.parse::<usize>()) {
+                line.split_once("   ").and_then(|(a, b)| {
+                    match (a.parse::<usize>(), b.parse::<usize>()) {
                         (Ok(a), Ok(b)) => Some((a, b)),
                         _ => None,
-                    })
+                    }
+                })
             })
             .unzip();
 
         a_.sort();
         b_.sort();
 
-        let answer = a_.into_iter().zip(b_.into_iter()).map(|(a, b)| {
-            a.abs_diff(b)
-        }).sum();
+        let answer = a_
+            .into_iter()
+            .zip(b_.into_iter())
+            .map(|(a, b)| a.abs_diff(b))
+            .sum();
         Ok(answer)
     }
 
@@ -62,23 +65,24 @@ fn main() -> Result<()> {
             .lines()
             .flatten()
             .filter_map(|line| {
-                line.split_once("   ")
-                    .and_then(|(a, b)| match (a.parse::<usize>(), b.parse::<usize>()) {
+                line.split_once("   ").and_then(|(a, b)| {
+                    match (a.parse::<usize>(), b.parse::<usize>()) {
                         (Ok(a), Ok(b)) => Some((a, b)),
                         _ => None,
-                    })
+                    }
+                })
             })
             .unzip();
 
-        let bm_ = b_.into_iter()
-            .fold(std::collections::HashMap::<usize, usize>::new(), |mut m, x| {
+        let bm_ = b_.into_iter().fold(
+            std::collections::HashMap::<usize, usize>::new(),
+            |mut m, x| {
                 *m.entry(x).or_default() += 1;
                 m
-            });
+            },
+        );
 
-        let answer = a_.iter().map(|a| {
-            a * bm_.get(a).unwrap_or(&0)
-        }).sum();
+        let answer = a_.iter().map(|a| a * bm_.get(a).unwrap_or(&0)).sum();
         Ok(answer)
     }
 

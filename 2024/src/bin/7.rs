@@ -21,7 +21,6 @@ const TEST: &str = r#"190: 10 19
 21037: 9 7 18 13
 292: 11 6 16 20"#;
 
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Operation {
     Mul,
@@ -33,10 +32,7 @@ fn concat(a: usize, b: usize) -> usize {
     a * 10usize.pow(b.ilog10() + 1) + b
 }
 
-fn calculate(
-    arguments: &[usize],
-    operations: &[Operation],
-) -> usize {
+fn calculate(arguments: &[usize], operations: &[Operation]) -> usize {
     let mut result = arguments[0];
 
     for i in 0..operations.len() {
@@ -106,7 +102,7 @@ fn main() -> Result<()> {
                 for ops in product(&op_alphabet, args.len() - 1) {
                     let ops_result = calculate(&args, &ops);
                     if ops_result == result {
-                        return Some(result)
+                        return Some(result);
                     }
                 }
                 None
@@ -141,7 +137,7 @@ fn main() -> Result<()> {
                 for ops in product(&op_alphabet, args.len() - 1) {
                     let ops_result = calculate(&args, &ops);
                     if ops_result == result {
-                        return Some(result)
+                        return Some(result);
                     }
                 }
                 None
@@ -169,10 +165,7 @@ mod tests {
         assert_eq!(calculate(&[12, 345], &[Operation::Concat]), 12345);
 
         assert_eq!(
-            calculate(
-                &[17, 8, 14],
-                &[Operation::Concat, Operation::Add]
-            ),
+            calculate(&[17, 8, 14], &[Operation::Concat, Operation::Add]),
             192,
         );
 

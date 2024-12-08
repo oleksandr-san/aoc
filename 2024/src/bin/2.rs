@@ -1,11 +1,11 @@
-use std::result::Result::Ok;
+use adv_code_2024::*;
 use anyhow::*;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
 use itertools::Itertools;
-use adv_code_2024::*;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+use std::result::Result::Ok;
 
 const DAY: &str = "2";
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
@@ -41,7 +41,10 @@ fn main() -> Result<()> {
                     tolerations -= 1;
                     continue;
                 } else {
-                    println!("difference condition is not met for {:?}: {} -> {}", report, prev, v);
+                    println!(
+                        "difference condition is not met for {:?}: {} -> {}",
+                        report, prev, v
+                    );
                     return false;
                 }
             }
@@ -52,7 +55,10 @@ fn main() -> Result<()> {
                     // asc = !asc;
                     continue;
                 } else {
-                    println!("order condition is not met for {:?}: {} -> {}", report, prev, v);
+                    println!(
+                        "order condition is not met for {:?}: {} -> {}",
+                        report, prev, v
+                    );
                     return false;
                 }
             }
@@ -86,10 +92,7 @@ fn main() -> Result<()> {
             .lines()
             .flatten()
             .map(|line| {
-                let report = line
-                    .split(" ")
-                    .flat_map(|s| s.parse::<i32>())
-                    .collect_vec();
+                let report = line.split(" ").flat_map(|s| s.parse::<i32>()).collect_vec();
                 check_report_orig(&report) as usize
             })
             .sum::<usize>();
@@ -111,20 +114,17 @@ fn main() -> Result<()> {
             .lines()
             .flatten()
             .map(|line| {
-                let report = line
-                    .split(" ")
-                    .flat_map(|s| s.parse::<i32>())
-                    .collect_vec();
+                let report = line.split(" ").flat_map(|s| s.parse::<i32>()).collect_vec();
 
                 if check_report_orig(&report) {
-                    return 1
+                    return 1;
                 }
                 for i in 0..report.len() {
                     let mut changed_report = report.clone();
                     changed_report.remove(i);
                     // println!("{}: {:?}", i, changed_report);
                     if check_report_orig(&changed_report) {
-                        return 1
+                        return 1;
                     }
                 }
                 0
