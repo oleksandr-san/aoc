@@ -41,11 +41,7 @@ fn main() -> Result<()> {
         a_.sort();
         b_.sort();
 
-        let answer = a_
-            .into_iter()
-            .zip(b_)
-            .map(|(a, b)| a.abs_diff(b))
-            .sum();
+        let answer = a_.into_iter().zip(b_).map(|(a, b)| a.abs_diff(b)).sum();
         Ok(answer)
     }
 
