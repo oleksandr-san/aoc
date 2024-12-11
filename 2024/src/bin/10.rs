@@ -68,6 +68,18 @@ impl TopographyMap {
             })
             .sum::<usize>()
     }
+
+    pub fn for_each_neighbor<F: FnMut(Position, u8)>(&self, pos: Position, mut f: F) {
+        for dir in [Direction::E, Direction::W, Direction::S, Direction::N] {
+            let Some(new_pos) = leap(pos, dir, 1) else {
+                continue;
+            };
+            if !rectangle_includes(&self.area, new_pos) {
+                continue;
+            }
+            f(new_pos, self.topography[new_pos.0][new_pos.1]);
+        }
+    }
 }
 
 fn score_trail(map: &TopographyMap, start: Position) -> usize {
@@ -79,22 +91,13 @@ fn score_trail(map: &TopographyMap, start: Position) -> usize {
         let height = map.topography[pos.0][pos.1];
         if height == 9 {
             score += 1;
-            continue;
-        }
-
-        for dir in [Direction::E, Direction::W, Direction::S, Direction::N] {
-            let Some(new_pos) = leap(pos, dir, 1) else {
-                continue;
-            };
-            if !rectangle_includes(&map.area, new_pos) || visited.contains(&new_pos) {
-                continue;
-            }
-            let new_height = map.topography[new_pos.0][new_pos.1];
-
-            if new_height == height + 1 {
-                queue.push_back(new_pos);
-                visited.insert(new_pos);
-            }
+        } else {
+            map.for_each_neighbor(pos, |new_pos, new_height| {
+                if !visited.contains(&new_pos) && new_height == height + 1 {
+                    queue.push_back(new_pos);
+                    visited.insert(new_pos);
+                }
+            });
         }
     }
 
@@ -109,21 +112,12 @@ fn score_trail_v2(map: &TopographyMap, start: Position) -> usize {
         let height = map.topography[pos.0][pos.1];
         if height == 9 {
             score += 1;
-            continue;
-        }
-
-        for dir in [Direction::E, Direction::W, Direction::S, Direction::N] {
-            let Some(new_pos) = leap(pos, dir, 1) else {
-                continue;
-            };
-            if !rectangle_includes(&map.area, new_pos) {
-                continue;
-            }
-            let new_height = map.topography[new_pos.0][new_pos.1];
-
-            if new_height == height + 1 {
-                queue.push_back(new_pos);
-            }
+        } else {
+            map.for_each_neighbor(pos, |new_pos, new_height| {
+                if new_height == height + 1 {
+                    queue.push_back(new_pos);
+                }
+            });
         }
     }
 
