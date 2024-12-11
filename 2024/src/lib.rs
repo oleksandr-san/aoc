@@ -10,6 +10,13 @@ pub fn start_day(day: &str) {
 pub type Position = (usize, usize);
 pub type Rectangle = (Position, Position);
 
+pub fn rectangle_includes(rectangle: &Rectangle, pos: Position) -> bool {
+    pos.0 >= rectangle.0 .0
+        && pos.1 >= rectangle.0 .1
+        && pos.0 <= rectangle.1 .0
+        && pos.1 <= rectangle.1 .1
+}
+
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum Direction {
     N,
