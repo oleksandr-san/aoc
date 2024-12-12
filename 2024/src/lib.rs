@@ -60,6 +60,35 @@ impl Direction {
             SW => NW,
         }
     }
+
+    pub fn turn_45_deg(self) -> Direction {
+        use Direction::*;
+        match self {
+            N => NE,
+            S => SW,
+            W => NW,
+            E => SE,
+            NE => E,
+            NW => N,
+            SE => S,
+            SW => W,
+        }
+    }
+
+    pub fn turn_left(self) -> Direction {
+        use Direction::*;
+        match self {
+            N => W,
+            W => S,
+            S => E,
+            E => N,
+
+            NW => SW,
+            SW => SE,
+            SE => NE,
+            NE => NW,
+        }
+    }
 }
 
 pub fn leap(pos: Position, dir: Direction, dist: usize) -> Option<Position> {
@@ -75,6 +104,15 @@ pub fn leap(pos: Position, dir: Direction, dist: usize) -> Option<Position> {
         SW if pos.1 >= dist => Some((pos.0 + dist, pos.1 - dist)),
         _ => None,
     }
+}
+
+pub fn leap_in_bounds(
+    pos: Position,
+    dir: Direction,
+    dist: usize,
+    area: &Rectangle,
+) -> Option<Position> {
+    leap(pos, dir, dist).filter(|np| rectangle_includes(area, *np))
 }
 
 pub fn beam(pos: Position, dir: Direction, len: usize, border: Position) -> Option<Vec<Position>> {
