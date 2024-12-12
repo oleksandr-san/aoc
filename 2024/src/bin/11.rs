@@ -33,7 +33,7 @@ fn split_in_half(mut n: usize, n_digits: usize) -> (usize, usize) {
     (n, m)
 }
 
-fn blink(stones: impl Iterator<Item = usize>, blinks: usize) -> usize {
+fn blink(stones: impl Iterator<Item = usize>, blinks: usize) -> u128 {
     let mut calculator = Calculator::new();
     stones
         .into_iter()
@@ -42,7 +42,7 @@ fn blink(stones: impl Iterator<Item = usize>, blinks: usize) -> usize {
 }
 
 struct Calculator {
-    cache: HashMap<(usize, usize), usize>,
+    cache: HashMap<(usize, usize), u128>,
 }
 
 impl Calculator {
@@ -52,7 +52,7 @@ impl Calculator {
         }
     }
 
-    pub fn calculate(&mut self, stone: usize, blinks: usize) -> usize {
+    pub fn calculate(&mut self, stone: usize, blinks: usize) -> u128 {
         if blinks == 0 {
             return 1;
         }
@@ -84,7 +84,7 @@ fn main() -> Result<()> {
     //region Part 1
     println!("=== Part 1 ===");
 
-    fn part1<R: BufRead>(reader: R) -> Result<usize> {
+    fn part1<R: BufRead>(reader: R) -> Result<u128> {
         let answer = blink(
             reader
                 .lines()
@@ -107,7 +107,7 @@ fn main() -> Result<()> {
     // region Part 2
     println!("\n=== Part 2 ===");
 
-    fn part2<R: BufRead>(reader: R) -> Result<usize> {
+    fn part2<R: BufRead>(reader: R) -> Result<u128> {
         let answer = blink(
             reader
                 .lines()
