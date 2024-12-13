@@ -3,7 +3,7 @@ use anyhow::*;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
 use itertools::Itertools;
-use std::collections::{VecDeque};
+use std::collections::VecDeque;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::result::Result::Ok;
